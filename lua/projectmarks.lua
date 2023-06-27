@@ -1,4 +1,5 @@
-M = {}
+local M = {}
+
 --- When using a global mark, the following will be appended to the command:
 --      {symbol}"
 --  For example, if we set symbol to `symbol='`, after calling a global mark
@@ -9,7 +10,7 @@ M = {}
 --
 ---@param symbol string
 local function _jump_with(symbol)
-  print('Waiting for mark...')
+  vim.api.nvim_notify(M.config.message, vim.log.levels.INFO, {})
   local mark = vim.fn.nr2char(vim.fn.getchar())
   local command = symbol .. mark
 
@@ -19,37 +20,60 @@ local function _jump_with(symbol)
   vim.api.nvim_feedkeys(command, 'n', false)
 end
 
--- Same as `jump_with` but wrapped in a pcall. This is necessary because
+-- Same as `_jump_with` but wrapped in a pcall. This is necessary because
 -- `vim.fn.getchar()` throws an error if no input is given.
 -- @param args table
-local function jump_with(args)
+M.jump_with = function (args)
   pcall(function() _jump_with(args) end)
 end
 
 --- returns a function handle for `jump_with` where symbol is: ', i.e. last
 --- To the cursor position when last exiting the current buffer.
---- @return function
 M.last_position = function()
-  return function()
-    jump_with("'")
-    print('\n')
-  end
+    M.jump_with("'")
 end
 
---- returns a function handle for `jump_with` where symbol is: `, i.e. last
---- know row + column position.
----@return function
+-- returns a function handle for `jump_with` where symbol is: `, i.e. last
+-- know row + column position.
 M.last_column_position = function()
-  return function()
-    jump_with('`')
-    print('\n')
+    M.jump_with('`')
+end
+
+-- Default configuration
+-- @param opts table
+-- @field opts.shadafile string | boolean
+-- @field opts.mappings boolean
+-- @field opts.message string
+local default = {
+  -- If set to a string, the path to the shada file is set to the given value.
+  -- If set to a boolean, the global shada file of neovim is used.
+  shadafile = 'nvim.shada',
+
+  -- If set to true, the "'" and "`" mappings are are appended by the
+  -- `last_position`, and `last_column_position` functions, respectively.
+  mappings = true,
+
+  -- Message to be displayed when jumping to a mark.
+  message = 'Waiting for mark...'
+}
+
+M.setup = function(opts)
+  M.config = vim.tbl_deep_extend('force', default, opts or {})
+
+  -- Searches directoties upward for a shada file. If found this file can be
+  -- interpreted as the "project-shada", conainint project specific data. For
+  -- example, marks. If not found, the global shada file of neovim is used.
+  if M.config.shadafile then
+    M.config.shadafile = vim.fn.stdpath('data') .. '/shada/main.shada'
+  end
+  vim.go.shadafile = vim.fn.findfile(M.config.shadafile, '.;')
+
+  -- If mappings are enabled, the following mappings are appended to the
+  -- `last_position` and `last_column_position` functions, respectively.
+  if M.config.mappings then
+    vim.keymap.set('n', "'", M.last_position, { noremap = false })
+    vim.keymap.set('n', "`", M.last_column_position, { noremap = false })
   end
 end
 
-vim.keymap.set('n', "'", M.last_position, { noremap = false })
-vim.keymap.set('n', "`", M.last_column_position, { noremap = false })
---
--- Searches directoties upward for a shada file. If found this file can be
--- interpreted as the "project-shada", conainint project specific data. For
--- example, marks. If not found, the global shada file of neovim is used.
-vim.go.shadafile = vim.fn.findfile('nvim.shada', '.;')
+return M
