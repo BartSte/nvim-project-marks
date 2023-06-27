@@ -10,7 +10,6 @@ local M = {}
 --
 ---@param symbol string
 local function _jump_with(symbol)
-  vim.api.nvim_notify(M.config.message, vim.log.levels.INFO, {})
   local mark = vim.fn.nr2char(vim.fn.getchar())
   local command = symbol .. mark
 
@@ -24,7 +23,9 @@ end
 -- `vim.fn.getchar()` throws an error if no input is given.
 -- @param args table
 M.jump_with = function (args)
+  vim.api.nvim_notify(M.config.message, vim.log.levels.INFO, {})
   pcall(function() _jump_with(args) end)
+  vim.api.nvim_notify('', vim.log.levels.INFO, {})
 end
 
 --- returns a function handle for `jump_with` where symbol is: ', i.e. last
