@@ -113,3 +113,4 @@ LICENSE                                                         *projectmarks-li
 
 Distributed under the MIT License.
 
+vim:ft=help:tw=79:ts=8:noet:ft=help:norl:
