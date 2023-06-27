@@ -64,7 +64,13 @@ M.setup = function(opts)
   -- interpreted as the "project-shada", conainint project specific data. For
   -- example, marks. If not found, the global shada file of neovim is used.
   if M.config.shadafile then
-    vim.go.shadafile = vim.fn.findfile(M.config.shadafile, '.;')
+    local name
+    if M.config.shadafile == true then
+      name = 'nvim.shada'
+    else
+      name = M.config.shadafile
+    end
+    vim.go.shadafile = vim.fn.findfile(name, '.;')
   end
 
   -- If mappings are enabled, the following mappings are appended to the
