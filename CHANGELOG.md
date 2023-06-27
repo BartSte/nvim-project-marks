@@ -1,4 +1,4 @@
-# Changelog - Khalorg
+# Changelog - nvim-project-marks
 This document describes the changes that were made to the software for each
 version. The changes are described concisely, to make it comprehensible for the
 user. A change is always categorized based on the following types:
@@ -9,3 +9,5 @@ user. A change is always categorized based on the following types:
 code.
 
 # 0.0.0
+- Marks can jump to the last cursor position in that file.
+- Marks can be set for a specific project.
