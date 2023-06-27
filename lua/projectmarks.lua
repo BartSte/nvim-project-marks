@@ -64,9 +64,8 @@ M.setup = function(opts)
   -- interpreted as the "project-shada", conainint project specific data. For
   -- example, marks. If not found, the global shada file of neovim is used.
   if M.config.shadafile then
-    M.config.shadafile = vim.fn.stdpath('data') .. '/shada/main.shada'
+    vim.go.shadafile = vim.fn.findfile(M.config.shadafile, '.;')
   end
-  vim.go.shadafile = vim.fn.findfile(M.config.shadafile, '.;')
 
   -- If mappings are enabled, the following mappings are appended to the
   -- `last_position` and `last_column_position` functions, respectively.
