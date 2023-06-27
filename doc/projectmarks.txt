@@ -1,20 +1,6 @@
 projectmarks.txt
 
 ================================================================================
-CONTENTS                                                       *projectmarks-contents*
-
-1. README - nvim-project-marks..............|projectmarks-readme_-_nvim-project-marks|
-    1.1. CONTENTS..............................................|projectmarks-contents|
-    1.2. Introduction......................................|projectmarks-introduction|
-    1.3. Installation......................................|projectmarks-installation|
-    1.4. Configuration....................................|projectmarks-configuration|
-    1.5. Usage....................................................|projectmarks-usage|
-    1.6. Functions............................................|projectmarks-functions|
-    1.7. Troubleshooting................................|projectmarks-troubleshooting|
-    1.8. Contributing......................................|projectmarks-contributing|
-    1.9. License................................................|projectmarks-license|
-
-================================================================================
 README - NVIM-PROJECT-MARKS                 *projectmarks-readme_-_nvim-project-marks*
 
 Minimal Neovim plugin to set file marks for specific projects.
