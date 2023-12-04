@@ -23,7 +23,8 @@ However, I wanted a simpler plugin that does only the following things:
 
 - Set marks that only a apply to a specific project.
 - After jumping to a mark, jump to the last cursor position in that file.
-  That's it, nothing more.
+  
+That's it, nothing more.
 
 ## Installation
 
@@ -39,9 +40,7 @@ return {
 }
 ```
 
-Lazy loading is not recommended, as the plugin may need to load another shada
-file that the global one. By lazy loading the plugin, this will go wrong. Not
-that the plugin is very small, so it will not slow down your startup time.
+Lazy loading is not recommended, as the plugin may need to load another shada file than the global one. By lazy loading the plugin, this will go wrong. Note that the plugin is very small, so it will not slow down your startup time.
 
 ## Configuration
 
