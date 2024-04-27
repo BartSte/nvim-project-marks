@@ -75,8 +75,6 @@ grouped. The following sections explain the difference.
 
 ## Locally
 
-> This is what I use and what is therefore tested.
-
 To set marks for specific projects, you need create an empty file called
 `nvim.shada` (or whatever you set `shadafile` option to) in the root of your
 project. This file will keep track of the marks you set for that project. If no
