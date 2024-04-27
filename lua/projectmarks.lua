@@ -41,10 +41,10 @@ M.last_column_position = function()
 end
 
 -- Default configuration
--- @param opts table
--- @field opts.shadafile string | boolean
--- @field opts.mappings boolean
--- @field opts.message string
+---@type table
+---@field shadafile string|boolean
+---@field mappings boolean
+---@field message string
 local default = {
   -- If set to a string, the path to the shada file is set to the given value.
   -- If set to a boolean, the global shada file of neovim is used.
@@ -58,6 +58,8 @@ local default = {
   message = 'Waiting for mark...'
 }
 
+--- Setup the configuration for the plugin.
+---@param opts table
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', default, opts or {})
 
