@@ -40,6 +40,24 @@ M.last_column_position = function()
   M.jump_with('`')
 end
 
+--- Create a file at `vim.go.shadafile`. If it exists, or the variable is not
+--- set, do nothing.
+M.make_shada = function()
+  if vim.go.shadafile ~= '' then
+    if vim.fn.filereadable(vim.go.shadafile) == 0 then
+      vim.fn.writefile({}, vim.go.shadafile)
+      vim.api.nvim_notify('Shada file created.', vim.log.levels.INFO, {})
+    else
+      vim.api.nvim_notify('Shada file already exists.', vim.log.levels.INFO, {})
+    end
+  else
+    vim.api.nvim_notify('No shada file is set.', vim.log.levels.WARN, {})
+  end
+end
+
+-- Make M.make_shada() available as a command MakeShada
+vim.cmd('command! MakeShada lua require("projectmarks").make_shada()')
+
 -- Default configuration
 ---@type table
 ---@field shadafile string|boolean
