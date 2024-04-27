@@ -22,7 +22,7 @@ end
 -- Same as `_jump_with` but wrapped in a pcall. This is necessary because
 -- `vim.fn.getchar()` throws an error if no input is given.
 -- @param args table
-M.jump_with = function (args)
+M.jump_with = function(args)
   vim.api.nvim_notify(M.config.message, vim.log.levels.INFO, {})
   pcall(function() _jump_with(args) end)
   vim.api.nvim_notify('', vim.log.levels.INFO, {})
@@ -31,13 +31,13 @@ end
 --- returns a function handle for `jump_with` where symbol is: ', i.e. last
 --- To the cursor position when last exiting the current buffer.
 M.last_position = function()
-    M.jump_with("'")
+  M.jump_with("'")
 end
 
 -- returns a function handle for `jump_with` where symbol is: `, i.e. last
 -- know row + column position.
 M.last_column_position = function()
-    M.jump_with('`')
+  M.jump_with('`')
 end
 
 -- Default configuration
@@ -61,16 +61,21 @@ local default = {
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', default, opts or {})
 
-  -- Searches directoties upward for a shada file. If found this file can be
-  -- interpreted as the "project-shada", conainint project specific data. For
-  -- example, marks. If not found, the global shada file of neovim is used.
+  -- If the `shadafile` option is true or a string, we will look for a local
+  -- shada file.
   if M.config.shadafile then
+    -- If the `shadafile` option is set to true, use the default value. Otherwise,
+    -- use the given value.
     local name
     if M.config.shadafile == true then
       name = 'nvim.shada'
     else
       name = M.config.shadafile
     end
+    -- Searches directoties upward for a shada file. If found this file can be
+    -- interpreted as the "project-shada", containing project specific data. For
+    -- example, marks. If not found, nil is returned. As a result, the `shadafile`
+    -- option is empty and the global shada file is used.
     vim.go.shadafile = vim.fn.findfile(name, '.;')
   end
 

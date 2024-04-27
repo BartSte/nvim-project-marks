@@ -23,7 +23,7 @@ However, I wanted a simpler plugin that does only the following things:
 
 - Set marks that only a apply to a specific project.
 - After jumping to a mark, jump to the last cursor position in that file.
-  
+
 That's it, nothing more.
 
 ## Installation
@@ -40,7 +40,9 @@ return {
 }
 ```
 
-Lazy loading is not recommended, as the plugin may need to load another shada file than the global one. By lazy loading the plugin, this will go wrong. Note that the plugin is very small, so it will not slow down your startup time.
+Lazy loading is not recommended, as the plugin may need to load another shada
+file than the global one. By lazy loading the plugin, this will go wrong. Note
+that the plugin is very small, so it will not slow down your startup time.
 
 ## Configuration
 
@@ -49,8 +51,12 @@ The following configuration are the default and can be changed through the
 
 ```lua
 require('projectmarks').setup({
-  -- If set to a string, the path to the shada file is set to the given value.
-  -- If set to a boolean, the global shada file of neovim is used.
+  -- The name of the shada file to look for by traversing up the file system
+  -- tree. If set to an absolute path, no search will be done as the path is
+  -- already known.
+  -- It is also possible to set this option to a boolean value. If set to true,
+  -- the name `nvim.shada` is used. If set to false, the global shada file of
+  -- Neovim is used.
   shadafile = 'nvim.shada',
 
   -- If set to true, the "'" and "`" mappings are are appended by the
@@ -64,6 +70,13 @@ require('projectmarks').setup({
 
 ## Usage
 
+Typically, there are two strategies to manage your shada file. Locally, and
+grouped. The following sections explain the difference.
+
+### Locally
+
+> This is what I use and what is therefore tested.
+
 To set marks for specific projects, you need create an empty file called
 `nvim.shada` (or whatever you set `shadafile` option to) in the root of your
 project. This file will keep track of the marks you set for that project. If no
@@ -72,24 +85,54 @@ until it finds one. If no `nvim.shada` file is found, the global shada file of
 Neovim is used. After this, you can set marks like you normally would as is
 described in `:h mark-motions`.
 
-> For example:
->
-> - You have your projects stored in the directory: `~/code`
-> - Lets say you have the following projects:
->   - `~/code/project_1/file.lua`
->   - `~/code/project_2/file.lua`
-> - For each project you will have `nvim.shada` file:
->   - `~/code/project_1/nvim.shada`
->   - `~/code/project_2/nvim.shada`
-> - Also, you add a shada file to `~/code/nvim.shada`.
-> - When you cd into `~/code/project_1` and open `file.lua`, the
->   `~/code/project_1/nvim.shada` will be used.
-> - When you cd into `~/code/project_2` and open `file.lua`, the
->   `~/code/project_2/nvim.shada` will be used.
-> - When you cd into `~/code` and open `~/code/project_1/file.lua`, the
->   `~/code/nvim.shada` will be used.
-> - When you cd into `~` and open `~/code/project_1/file.lua`, the global shada
->   will be used as there is no shada file in `~`.
+For example:
+
+- You have your projects stored in the directory: `~/code`
+- Lets say you have the following projects:
+  - `~/code/project_1/file.lua`
+  - `~/code/project_2/file.lua`
+- For each project you will have `nvim.shada` file:
+  - `~/code/project_1/nvim.shada`
+  - `~/code/project_2/nvim.shada`
+- Also, you add a shada file to `~/code/nvim.shada`.
+- When you cd into `~/code/project_1` and open `file.lua`, the
+  `~/code/project_1/nvim.shada` will be used.
+- When you cd into `~/code/project_2` and open `file.lua`, the
+  `~/code/project_2/nvim.shada` will be used.
+- When you cd into `~/code` and open `~/code/project_1/file.lua`, the
+  `~/code/nvim.shada` will be used.
+- When you cd into `~` and open `~/code/project_1/file.lua`, the global shada
+  will be used as there is no shada file in `~`.
+
+### Grouped
+
+This method avoids creating shada files in each project (which you have to add
+to your `.gitignore` file). Instead, you can group your shada files in a
+specific directory. For example:
+
+- Create a directory, lets call it `~/shadas`.
+- Place the following in your config:
+
+```lua
+-- Get the name of the current working directory.
+local function cwd_name()
+  return vim.fn.fnamemodify(vim.fn.getcwd(), ':t')
+end
+
+require('projectmarks').setup({
+  shadafile = "~/shadas/" .. cwd_name() .. ".shada"
+})
+```
+
+- When you create a new project, create a new empty shada shada file in
+  `~/shadas` with the name of root directory of the project. For example, if
+  your project is stored in `~/code/project_1`, create a file called
+  `~/shadas/project_1.shada`.
+
+Now, each time you open neovim from the root of a project, the plugin will look
+for a shada file in `~/shadas` with the name of the root directory of the
+project. If it finds one, it will use that file. If it does not find one, it
+will use the global shada file of Neovim.
 
 ## Functions
 
@@ -117,3 +160,7 @@ more information.
 ## License
 
 Distributed under the MIT License.
+
+```
+
+```
