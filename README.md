@@ -52,7 +52,7 @@ The following configuration are the default and can be changed through the
 ```lua
 require('projectmarks').setup({
   -- The name of the shada file to look for by traversing up the file system
-  -- tree. If set to an absolute path, no search will be done as the path is
+  -- tree. If set to an absoallute path, no search will be done as the path is
   -- already known.
   -- It is also possible to set this option to a boolean value. If set to true,
   -- the name `nvim.shada` is used. If set to false, the global shada file of
@@ -77,11 +77,12 @@ grouped. The following sections explain the difference.
 
 To set marks for specific projects, you need create an empty file called
 `nvim.shada` (or whatever you set `shadafile` option to) in the root of your
-project. This file will keep track of the marks you set for that project. If no
-`nvim.shada` file is found, Neovim will transverse the directory tree upward,
-until it finds one. If no `nvim.shada` file is found, the global shada file of
-Neovim is used. After this, you can set marks like you normally would as is
-described in `:h mark-motions`.
+project. You can do this manually, or you can call `:MakeShada`. This file will
+keep track of the marks you set for that project. If no `nvim.shada` file is
+found, Neovim will transverse the directory tree upward, until it finds one. If
+no `nvim.shada` file is found, the global shada file of Neovim is used. After
+this, you can set marks like you normally would as is described in `:h
+mark-motions`.
 
 For example:
 
@@ -122,10 +123,11 @@ require('projectmarks').setup({
 })
 ```
 
-- When you create a new project, create a new empty shada shada file in
-  `~/shadas` with the name of root directory of the project. For example, if
-  your project is stored in `~/code/project_1`, create a file called
-  `~/shadas/project_1.shada`.
+- When you create a new project, create a new empty shada file in `~/shadas`
+  with the name of root directory of the project. For example, if your project
+  is stored in `~/code/project_1`, create a file called
+  `~/shadas/project_1.shada`. You can do this manually, or you can call
+  `:MakeShada`.
 
 Now, each time you open neovim from the root of a project, the plugin will look
 for a shada file in `~/shadas` with the name of the root directory of the
@@ -144,6 +146,13 @@ The following functions are exposed:
   a global mark `A`, the following command is triggered: `'A'"` As, a result the
   cursor is returned to the last position ('") instead of the mark. As a result,
   you will jump to the last position in the file of the given mark.
+
+# Commands
+
+The following commands are exposed:
+
+- `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
+  option.
 
 # Troubleshooting
 
