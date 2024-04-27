@@ -59,7 +59,7 @@ local default = {
 }
 
 --- Setup the configuration for the plugin.
----@param opts table
+---@param opts defaults
 M.setup = function(opts)
   M.config = vim.tbl_deep_extend('force', default, opts or {})
 
