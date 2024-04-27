@@ -1,0 +1,206 @@
+*projectmarks.txt*          For NVIM v0.8.0         Last change: 2024 April 27
+
+==============================================================================
+Table of Contents                             *projectmarks-table-of-contents*
+
+1. README - nvim-project-marks      |projectmarks-readme---nvim-project-marks|
+2. CONTENTS                                            |projectmarks-contents|
+3. Introduction                                    |projectmarks-introduction|
+4. Installation                                    |projectmarks-installation|
+5. Configuration                                  |projectmarks-configuration|
+6. Usage                                                  |projectmarks-usage|
+  - Locally                                       |projectmarks-usage-locally|
+  - Grouped                                       |projectmarks-usage-grouped|
+7. Functions                                          |projectmarks-functions|
+8. Troubleshooting                              |projectmarks-troubleshooting|
+9. Contributing                                    |projectmarks-contributing|
+10. License                                             |projectmarks-license|
+
+==============================================================================
+1. README - nvim-project-marks      *projectmarks-readme---nvim-project-marks*
+
+Minimal Neovim plugin to set file marks for specific projects.
+
+
+==============================================================================
+2. CONTENTS                                            *projectmarks-contents*
+
+1. |projectmarks-introduction|
+2. |projectmarks-installation|
+3. |projectmarks-configuration|
+4. |projectmarks-usage|
+5. |projectmarks-functions|
+6. |projectmarks-troubleshooting|
+7. |projectmarks-contributing|
+8. |projectmarks-license|
+
+
+==============================================================================
+3. Introduction                                    *projectmarks-introduction*
+
+Using file marks is a great way to quickly jump to a specific file. By "file
+marks" I mean the marks you set on using `m` and a capital or a number (see
+|mark-motions|). Many great plugins exist that leverage similar strategies to
+jump between files, like harpoon <https://github.com/ThePrimeagen/harpoon>.
+However, I wanted a simpler plugin that does only the following things:
+
+- Set marks that only a apply to a specific project.
+- After jumping to a mark, jump to the last cursor position in that file.
+
+That’s it, nothing more.
+
+
+==============================================================================
+4. Installation                                    *projectmarks-installation*
+
+Use your favorite plugin manager. For example lazy.nvim:
+
+>lua
+    return {
+        'BartSte/nvim-project-marks',
+        lazy = false,
+        config = function()
+            require('projectmarks').setup({})
+        end
+    }
+<
+
+Lazy loading is not recommended, as the plugin may need to load another shada
+file than the global one. By lazy loading the plugin, this will go wrong. Note
+that the plugin is very small, so it will not slow down your startup time.
+
+
+==============================================================================
+5. Configuration                                  *projectmarks-configuration*
+
+The following configuration are the default and can be changed through the
+`projectmarks.setup` function:
+
+>lua
+    require('projectmarks').setup({
+      -- The name of the shada file to look for by traversing up the file system
+      -- tree. If set to an absolute path, no search will be done as the path is
+      -- already known.
+      -- It is also possible to set this option to a boolean value. If set to true,
+      -- the name `nvim.shada` is used. If set to false, the global shada file of
+      -- Neovim is used.
+      shadafile = 'nvim.shada',
+    
+      -- If set to true, the "'" and "`" mappings are are appended by the
+      -- `last_position`, and `last_column_position` functions, respectively.
+      mappings = true,
+    
+      -- Message to be displayed when jumping to a mark.
+      message = 'Waiting for mark...'
+    })
+<
+
+
+==============================================================================
+6. Usage                                                  *projectmarks-usage*
+
+Typically, there are two strategies to manage your shada file. Locally, and
+grouped. The following sections explain the difference.
+
+
+LOCALLY                                           *projectmarks-usage-locally*
+
+
+  This is what I use and what is therefore tested.
+To set marks for specific projects, you need create an empty file called
+`nvim.shada` (or whatever you set `shadafile` option to) in the root of your
+project. This file will keep track of the marks you set for that project. If no
+`nvim.shada` file is found, Neovim will transverse the directory tree upward,
+until it finds one. If no `nvim.shada` file is found, the global shada file of
+Neovim is used. After this, you can set marks like you normally would as is
+described in |mark-motions|.
+
+For example:
+
+- You have your projects stored in the directory: `~/code`
+- Lets say you have the following projects:
+    - `~/code/project_1/file.lua`
+    - `~/code/project_2/file.lua`
+- For each project you will have `nvim.shada` file:
+    - `~/code/project_1/nvim.shada`
+    - `~/code/project_2/nvim.shada`
+- Also, you add a shada file to `~/code/nvim.shada`.
+- When you cd into `~/code/project_1` and open `file.lua`, the
+    `~/code/project_1/nvim.shada` will be used.
+- When you cd into `~/code/project_2` and open `file.lua`, the
+    `~/code/project_2/nvim.shada` will be used.
+- When you cd into `~/code` and open `~/code/project_1/file.lua`, the
+    `~/code/nvim.shada` will be used.
+- When you cd into `~` and open `~/code/project_1/file.lua`, the global shada
+    will be used as there is no shada file in `~`.
+
+
+GROUPED                                           *projectmarks-usage-grouped*
+
+This method avoids creating shada files in each project (which you have to add
+to your `.gitignore` file). Instead, you can group your shada files in a
+specific directory. For example:
+
+- Create a directory, lets call it `~/shadas`.
+- Place the following in your config:
+
+>lua
+    -- Get the name of the current working directory.
+    local function cwd_name()
+      return vim.fn.fnamemodify(vim.fn.getcwd(), ':t')
+    end
+    
+    require('projectmarks').setup({
+      shadafile = "~/shadas/" .. cwd_name() .. ".shada"
+    })
+<
+
+- When you create a new project, create a new empty shada shada file in
+    `~/shadas` with the name of root directory of the project. For example, if
+    your project is stored in `~/code/project_1`, create a file called
+    `~/shadas/project_1.shada`.
+
+Now, each time you open neovim from the root of a project, the plugin will look
+for a shada file in `~/shadas` with the name of the root directory of the
+project. If it finds one, it will use that file. If it does not find one, it
+will use the global shada file of Neovim.
+
+
+==============================================================================
+7. Functions                                          *projectmarks-functions*
+
+The following functions are exposed:
+
+- `last_position`: Jump to the last position in the file of the given mark.
+- `last_column_position`: Jump to the last column position in the file of the
+    given mark.
+- `jump_with`: When using a global mark, the following will be appended to the
+    command: {symbol}". For example, if we set symbol to `symbol='`, after calling
+    a global mark `A`, the following command is triggered: `'A'"` As, a result the
+    cursor is returned to the last position (’") instead of the mark. As a result,
+    you will jump to the last position in the file of the given mark.
+
+
+==============================================================================
+8. Troubleshooting                              *projectmarks-troubleshooting*
+
+If you encounter any issues, please report them on the issue tracker at:
+nvim-project-marks issues
+<https://github.com/BartSte/nvim-project-marks/issues>
+
+
+==============================================================================
+9. Contributing                                    *projectmarks-contributing*
+
+Contributions are welcome! Please see CONTRIBUTING <./CONTRIBUTING.md> for more
+information.
+
+
+==============================================================================
+10. License                                             *projectmarks-license*
+
+Distributed under the MIT License.
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
