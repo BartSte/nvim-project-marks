@@ -2,7 +2,7 @@
 
 Minimal Neovim plugin to set file marks for specific projects.
 
-## CONTENTS
+# CONTENTS
 
 1. [Introduction](#introduction)
 2. [Installation](#installation)
@@ -13,7 +13,7 @@ Minimal Neovim plugin to set file marks for specific projects.
 7. [Contributing](#contributing)
 8. [License](#license)
 
-## Introduction
+# Introduction
 
 Using file marks is a great way to quickly jump to a specific file. By "file
 marks" I mean the marks you set on using `m` and a capital or a number (see `:h
@@ -26,7 +26,7 @@ However, I wanted a simpler plugin that does only the following things:
 
 That's it, nothing more.
 
-## Installation
+# Installation
 
 Use your favorite plugin manager. For example lazy.nvim:
 
@@ -44,7 +44,7 @@ Lazy loading is not recommended, as the plugin may need to load another shada
 file than the global one. By lazy loading the plugin, this will go wrong. Note
 that the plugin is very small, so it will not slow down your startup time.
 
-## Configuration
+# Configuration
 
 The following configuration are the default and can be changed through the
 `projectmarks.setup` function:
@@ -68,12 +68,12 @@ require('projectmarks').setup({
 })
 ```
 
-## Usage
+# Usage
 
 Typically, there are two strategies to manage your shada file. Locally, and
 grouped. The following sections explain the difference.
 
-### Locally
+## Locally
 
 > This is what I use and what is therefore tested.
 
@@ -104,7 +104,7 @@ For example:
 - When you cd into `~` and open `~/code/project_1/file.lua`, the global shada
   will be used as there is no shada file in `~`.
 
-### Grouped
+## Grouped
 
 This method avoids creating shada files in each project (which you have to add
 to your `.gitignore` file). Instead, you can group your shada files in a
@@ -134,7 +134,7 @@ for a shada file in `~/shadas` with the name of the root directory of the
 project. If it finds one, it will use that file. If it does not find one, it
 will use the global shada file of Neovim.
 
-## Functions
+# Functions
 
 The following functions are exposed:
 
@@ -147,20 +147,16 @@ The following functions are exposed:
   cursor is returned to the last position ('") instead of the mark. As a result,
   you will jump to the last position in the file of the given mark.
 
-## Troubleshooting
+# Troubleshooting
 
 If you encounter any issues, please report them on the issue tracker at:
 [nvim-project-marks issues](https://github.com/BartSte/nvim-project-marks/issues)
 
-## Contributing
+# Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING](./CONTRIBUTING.md) for
 more information.
 
-## License
+# License
 
 Distributed under the MIT License.
-
-```
-
-```
