@@ -1,7 +1,3 @@
----@class projectmarks.helpers The helpers module for the projectmarks plugin.
----@field set_shadafile fun(path: string) Sets the vim.go.shadafile to the given
----value, if it can be found.
----@field set_mappings fun(message: string) Enables the mappings for the plugin.
 local M = {}
 
 local INFO = vim.log.levels.INFO
@@ -16,7 +12,7 @@ end
 
 --- Checks if a file exists.
 ---@param filename string The name of the file to be checked.
----@return boolean True if the file exists, false otherwise.
+---@return boolean result True if the file exists, false otherwise.
 M.exists = function(filename)
   filename = vim.fn.expand(filename)
   return vim.fn.filereadable(filename) == 1

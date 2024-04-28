@@ -1,12 +1,12 @@
 local helpers = require 'projectmarks.helpers'
 
 local function show_error()
-  error('projectmarks.setup() must be called before setup()')
+  error('projectmarks.setup() must be called before you can use this command.')
 end
 
----@class projectmarks.commands
+---@class Commands
 ---@field make_shada fun(shadafile: string)
----@field setup fun(opts: table)
+---@field setup fun(opts: Options)
 local M = {
   make_shada = show_error,
 }

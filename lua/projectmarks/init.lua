@@ -1,12 +1,9 @@
 local helpers = require('projectmarks.helpers')
 local commands = require('projectmarks.commands')
 
----@class projectmarks
----@field opts Options The options for the plugin.
----@field setup fun(user_opts: Options) The setup function for the plugin.
 local M = {}
 
----@class Options
+---@class Options The default options for the plugin.
 ---@field shadafile string If set to a string, the vim.go.shadafile is set to
 ---the given value, if it can be found by moving upwards in the file tree. If
 ---not found, the global shada file is used.
@@ -15,9 +12,6 @@ local M = {}
 ---respectively.
 ---@field message string Message to be displayed when jumping to a mark. Is only
 ---displayed if mappings are enabled.
-M.opts = {}
-
----@class default_opts : Options The default options for the plugin.
 local default_opts = {
   shadafile = 'nvim.shada',
   mappings = true,

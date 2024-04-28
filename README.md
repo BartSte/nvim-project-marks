@@ -42,18 +42,18 @@ return {
 
 Lazy loading is not recommended, as the plugin may need to load another shada
 file than the global one. By lazy loading the plugin, this will go wrong. Note
-that the plugin is very small, so it will not slow down your startup time.
+that the plugin is very small, so it will not slow down your startup time
+noticeably.
 
 # Configuration
 
 The following configuration are the default and can be changed through the
-`projectmarks.setup` function:
+`require("projectmarks").setup` function:
 
 ```lua
 require('projectmarks').setup({
-  -- If set to a string, the vim.go.shadafile is set to the given value, if it
-  -- can be found by moving upwards in the file tree. If not found, the global
-  -- shada file is used
+  -- Set Neovim's shadafile to the given value, if it can be found by moving up
+  -- the directory tree. If not, the global shada file is used.
   shadafile = 'nvim.shada',
 
   -- If set to true, the "'" and "`" mappings are are appended by the
@@ -72,14 +72,11 @@ grouped. The following sections explain the difference.
 
 ## Locally
 
-To set marks for specific projects, you need create an empty file called
-`nvim.shada` (or whatever you set `shadafile` option to) in the root of your
-project. You can do this manually, or you can call `:MakeShada`. This file will
-keep track of the marks you set for that project. If no `nvim.shada` file is
-found, Neovim will transverse the directory tree upward, until it finds one. If
-no `nvim.shada` file is found, the global shada file of Neovim is used. After
-this, you can set marks like you normally would as is described in `:h
-mark-motions`.
+To set marks for specific project, you need create an empty file at the value of
+`require("projectmarks").opts.shadafile`. You can do this manually, or
+you can call `:MakeShada`. This file will keep track of the marks you set for
+that project. After this, you can set marks like you normally would as is
+described in `:h mark-motions`.
 
 For example:
 
@@ -126,7 +123,7 @@ require('projectmarks').setup({
   `~/shadas/project_1.shada`. You can do this manually, or you can call
   `:MakeShada`.
 
-Now, each time you open neovim from the root of a project, the plugin will look
+Now, each time you open Neovim from the root of a project, the plugin will look
 for a shada file in `~/shadas` with the name of the root directory of the
 project. If it finds one, it will use that file. If it does not find one, it
 will use the global shada file of Neovim.
@@ -150,6 +147,7 @@ The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
   option.
+- `ClearShada`: Clear the shada file.
 
 # Troubleshooting
 

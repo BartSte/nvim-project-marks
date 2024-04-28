@@ -1,4 +1,4 @@
----@class projectmarks.functions
+---@class Functions
 ---@field jump_with fun(symbol: string, message: string|nil)
 ---@field last_position fun(message: string|nil)
 ---@field last_column_position fun(message: string|nil)
