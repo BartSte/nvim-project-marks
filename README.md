@@ -51,16 +51,13 @@ The following configuration are the default and can be changed through the
 
 ```lua
 require('projectmarks').setup({
-  -- The name of the shada file to look for by traversing up the file system
-  -- tree. If set to an absoallute path, no search will be done as the path is
-  -- already known.
-  -- It is also possible to set this option to a boolean value. If set to true,
-  -- the name `nvim.shada` is used. If set to false, the global shada file of
-  -- Neovim is used.
+  -- If set to a string, the vim.go.shadafile is set to the given value, if it
+  -- can be found by moving upwards in the file tree. If not found, the global
+  -- shada file is used
   shadafile = 'nvim.shada',
 
   -- If set to true, the "'" and "`" mappings are are appended by the
-  -- `last_position`, and `last_column_position` functions, respectively.
+  -- `last_position`, and `last_column_position` functions, respectively
   mappings = true,
 
   -- Message to be displayed when jumping to a mark.
