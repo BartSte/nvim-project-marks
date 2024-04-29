@@ -1,4 +1,4 @@
-*projectmarks.txt*          For NVIM v0.8.0         Last change: 2024 April 28
+*projectmarks.txt*          For NVIM v0.8.0         Last change: 2024 April 29
 
 ==============================================================================
 Table of Contents                             *projectmarks-table-of-contents*
@@ -183,7 +183,6 @@ The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
     option.
-- `DeleteShada`: Delete the shada file.
 - `ClearShada`: Clear the shada file.
 
 
