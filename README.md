@@ -147,7 +147,6 @@ The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
   option.
-- `ClearShada`: Clear the shada file.
 
 # Troubleshooting
 
