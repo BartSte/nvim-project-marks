@@ -1,4 +1,5 @@
-local func = require("projectmarks.functions")
+local shada = require "projectmarks.shada"
+local marks = require "projectmarks.marks"
 
 ---@class Lualine Lualine configurations.
 ---@field shada table The shada file configuration. When `shadafile` is set, the
@@ -7,31 +8,23 @@ local func = require("projectmarks.functions")
 ---active buffer are displayed, together with an icon.
 ---@field marks_optimized table The marks configuration. The same as `marks`, but
 ---optimized for being polled. Make sure that `opts.mappings` is set to `true`,
----or that you call `projectmarks.functions.marks_optimized_refresh` when you
+---or that you call `projectmarks.marks.marks_optimized_refresh` when you
 ---add or remove a mark.
 local M = {}
 
-local function shadafile()
-  return vim.fn.fnamemodify(vim.go.shadafile, ":t")
-end
-
-local function has_shadafile()
-  return vim.go.shadafile ~= ""
-end
-
 M.shada = {
-  shadafile,
+  shada.file,
   icon = "💾",
-  cond = has_shadafile
+  cond = shada.has_file
 }
 
 M.marks = {
-  function() return func.marks() end,
+  function() return marks.concat() end,
   icon = "🔖",
 }
 
 M.marks_optimized = {
-  function() return func.marks_optimized() end,
+  function() return marks.concat_optimized() end,
   icon = "🔖",
 }
 

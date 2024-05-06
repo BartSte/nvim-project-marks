@@ -1,28 +1,5 @@
-local helpers = require "projectmarks.helpers"
-
----@class Functions The functionality of the plugin captured as a set of
----functions.
----@field make_shada fun(shadafile: string)
----@field jump_with fun(symbol: string, message: string|nil)
----@field last_position fun(message: string|nil)
----@field last_column_position fun(message: string|nil)
----@field marks fun(bufnr: number|nil): string
----@field marks_optimized fun(): string
----@field marks_optimized_refresh fun()
----@field add_mark fun(mark: string|nil)
+---@class Marks
 local M = {}
-
---- Create a file at opts.shadafile if it does not exist. Otherwise, do nothing.
----@param shadafile string The path to the shada file.
-M.make_shada = function(shadafile)
-  if shadafile == '' then
-    helpers.log('No shada file is set.', vim.log.levels.WARN)
-  elseif helpers.exists(shadafile) then
-    helpers.log('Shada file already exists at ' .. shadafile, vim.log.levels.INFO)
-  else
-    helpers.create_file(shadafile)
-  end
-end
 
 ---When using a upper case mark, the following will be appended to the command:
 ---  {symbol}"
@@ -49,12 +26,48 @@ M.last_position = function() M.jump_with("'") end
 ---row + column position.
 M.last_column_position = function() M.jump_with("`") end
 
+--- Return true if the mark exists in the buffer. Otherwise, return false.
+---@param bufnr number The buffer number
+---@param mark string The mark to check
+---@return boolean
+local function is_in_buffer(bufnr, mark)
+  local row_col = vim.api.nvim_buf_get_mark(bufnr, mark)
+  return row_col[1] + row_col[2] > 0
+end
+
+--- Runs the `marks` with
+---@param args string|nil The arguments to pass to the marks command
+---@return table marks The marks of the current buffer
+local function marks_cmd(args)
+  args = args or "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  local ok, result = pcall(vim.fn.execute, "marks " .. args)
+  if ok then
+    return vim.split(result, "\n")
+  else
+    return {}
+  end
+end
+
+--- Return a table of marks that exist in the buffer.
+---@param bufnr number The buffer number
+---@return table<string> marks The marks that exist in the buffer
+M.find = function(bufnr)
+  local marks = {}
+  for _, line in ipairs(marks_cmd()) do
+    local mark = line:match("^ *([a-zA-Z]) ")
+    if mark ~= nil and is_in_buffer(bufnr, mark) then
+      table.insert(marks, mark)
+    end
+  end
+  return marks
+end
+
 ---Return the content of `:marks` for `bufnr` as a string.
 ---@param bufnr number|nil
 ---@return string marks The marks of the buffer
-M.marks = function(bufnr)
+M.concat = function(bufnr)
   bufnr = bufnr or 0
-  return table.concat(helpers.find_marks(bufnr), " ")
+  return table.concat(M.find(bufnr), " ")
 end
 
 local latest_buffer = 0
@@ -66,11 +79,11 @@ local latest_marks = ""
 --- result. `marks_optimized_refresh` can be used to force a refresh of the
 --- stored marks.
 ---@return string marks The marks of the current buffer
-M.marks_optimized = function()
+M.concat_optimized = function()
   local buffer = vim.fn.bufnr()
   if buffer ~= latest_buffer then
     latest_buffer = buffer
-    latest_marks = M.marks(buffer)
+    latest_marks = M.concat(buffer)
   end
   return latest_marks
 end
@@ -78,15 +91,15 @@ end
 --- Force a refresh of the stored marks in `marks_optimized`. This is useful when
 --- the buffer has not changed but the marks have.
 ---@return string marks The marks of the current buffer
-M.marks_optimized_refresh = function()
+M.concat_optimized_refresh = function()
   latest_buffer = 0
-  return M.marks_optimized()
+  return M.concat_optimized()
 end
 
 ---Add a mark to the current buffer. If `mark` is nil, it will prompt the user
 ---to enter a mark.
 ---@param mark string|nil
-M.add_mark = function(mark)
+M.add = function(mark)
   local ok = true
   if mark == nil then
     ok, mark = pcall(function() return vim.fn.nr2char(vim.fn.getchar()) end)
@@ -94,14 +107,14 @@ M.add_mark = function(mark)
   if ok then
     vim.cmd("mark " .. mark)
   end
-  M.marks_optimized_refresh()
+  M.concat_optimized_refresh()
 end
 
 ---Delete a mark from the current buffer.
 ---@param mark string The mark to be deleted
-M.delete_mark = function(mark)
+M.delete = function(mark)
   vim.cmd("delmark " .. mark)
-  M.marks_optimized_refresh()
+  M.concat_optimized_refresh()
 end
 
 return M

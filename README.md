@@ -4,16 +4,20 @@ Minimal Neovim plugin to set file marks for specific projects.
 
 # CONTENTS
 
-1. [Introduction](#introduction)
-2. [Installation](#installation)
-3. [Configuration](#configuration)
-4. [Usage](#usage)
-5. [Functions](#functions)
-6. [Commands](#commands)
-7. [Lualine](#lualine)
-8. [Troubleshooting](#troubleshooting)
-9. [Contributing](#contributing)
-10. [License](#license)
+<!--toc:start-->
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [Locally](#locally)
+  - [Grouped](#grouped)
+- [Commands](#commands)
+- [Functions](#functions)
+- [Lualine](#lualine)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+<!--toc:end-->
 
 # Introduction
 
@@ -27,6 +31,8 @@ However, I wanted a simpler plugin that does only the following things:
 - After jumping to a mark, jump to the last cursor position in that file.
 
 That's it, nothing more.
+
+Well, some extra features are added later that are nice, but not essential.
 
 # Installation
 
@@ -58,8 +64,12 @@ require('projectmarks').setup({
   -- the directory tree. If not, the global shada file is used.
   shadafile = 'nvim.shada',
 
-  -- If set to true, the "'" and "`" mappings are are appended by the
-  -- `last_position`, and `last_column_position` functions, respectively
+  -- If set to true, the following happens:
+  -- - The mapping "'" is appended by the `LastPosition` command.
+  -- - The mapping "`" is appended by the `LastColumnPosition` command.
+  -- - The `m` key, the `:mark` command, and the `:delmark` command are appended
+  --   by a function that refreshes the lualine statusline. If you do not use
+  --   this feature, nothing will happen.
   mappings = true,
 
   -- Message to be displayed when jumping to a mark.
@@ -130,25 +140,37 @@ for a shada file in `~/shadas` with the name of the root directory of the
 project. If it finds one, it will use that file. If it does not find one, it
 will use the global shada file of Neovim.
 
-# Functions
-
-The following functions are exposed:
-
-- `last_position`: Jump to the last position in the file of the given mark.
-- `last_column_position`: Jump to the last column position in the file of the
-  given mark.
-- `jump_with`: When using a global mark, the following will be appended to the
-  command: {symbol}". For example, if we set symbol to `symbol='`, after calling
-  a global mark `A`, the following command is triggered: `'A'"` As, a result the
-  cursor is returned to the last position ('") instead of the mark. As a result,
-  you will jump to the last position in the file of the given mark.
-
 # Commands
 
 The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
   option.
+- `AddMark`: The same as the `m` key and the `:mark` command, but also refreshes
+  the lualine statusline.
+- `DeleteMark`: The same as the `:delmark` command, but also refreshes the
+  lualine statusline.
+- `LastPosition`: Jump to the last position in the file of the given mark.
+- `LastColumnPosition`: Jump to the last column position in the file of the
+  given mark.
+
+# Functions
+
+The following functions are exposed through the `require("projectmarks")`
+module.
+
+- `jump_with`: When using a global mark, the following will be appended to the
+  command: {symbol}". For example, if we set symbol to `symbol='`, after calling
+  a global mark `A`, the following command is triggered: `'A'"` As, a result the
+  cursor is returned to the last position ('") instead of the mark. As a result,
+  you will jump to the last position in the file of the given mark.
+- The functions: `make_shada`, `add_mark`, `delete_mark`, `last_position`, and
+  `last_column_position` are also exposed. They are equivalent to the commands,
+  only now no notifications are displayed.
+
+It is not recommended to use functions from other modules, as they are may be
+subject to change, with the exception of the `require("projectmarks").lualine`
+module, as is explained in the next section.
 
 # Lualine
 
@@ -157,6 +179,12 @@ For those using lualine, the following tables can be used for lualine:
 - `require('projectmarks').lualine.shada`: Displays an icon with the name of the
   shada file that is being used. If the global shada file is used, nothing is
   displayed.
+- `require('projectmarks').lualine.marks`: Displays the marks that are set in
+  the current buffer. If no marks are set, nothing is displayed.
+- `require('projectmarks').lualine.marks_optimized`: Has the same functionality
+  as `marks`, but it only refreshes its content when the active buffer changes,
+  or the marks are changed. The `opts.mapping` option must be set to `true` for
+  this to work.
 
 # Troubleshooting
 
