@@ -9,9 +9,11 @@ Minimal Neovim plugin to set file marks for specific projects.
 3. [Configuration](#configuration)
 4. [Usage](#usage)
 5. [Functions](#functions)
-6. [Troubleshooting](#troubleshooting)
-7. [Contributing](#contributing)
-8. [License](#license)
+6. [Commands](#commands)
+7. [Lualine](#lualine)
+8. [Troubleshooting](#troubleshooting)
+9. [Contributing](#contributing)
+10. [License](#license)
 
 # Introduction
 
@@ -147,6 +149,14 @@ The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
   option.
+
+# Lualine
+
+For those using lualine, the following tables can be used for lualine:
+
+- `require('projectmarks').lualine.shada`: Displays an icon with the name of the
+  shada file that is being used. If the global shada file is used, nothing is
+  displayed.
 
 # Troubleshooting
 
