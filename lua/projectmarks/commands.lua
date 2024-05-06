@@ -1,34 +1,27 @@
-local helpers = require 'projectmarks.helpers'
+local func = require 'projectmarks.functions'
+local decorate = require 'projectmarks.helpers'.message_decorator
 
-local function show_error()
-  error('projectmarks.setup() must be called before you can use this command.')
-end
-
----@class Commands
+---@class Commands Command that combine the user option with the
+---`projectmarks.functions`.
+---@field add_mark fun(mark: string|nil)
 ---@field make_shada fun(shadafile: string)
+---@field last_position fun(message: string|nil)
+---@field last_column_position fun(message: string|nil)
 ---@field setup fun(opts: Options)
-local M = {
-  make_shada = show_error,
-}
-
---- Create a file at opts.shadafile if it does not exist. Otherwise, do nothing.
----@param shadafile string The path to the shada file.
-local function make_shada(shadafile)
-  if shadafile == '' then
-    helpers.log('No shada file is set.', vim.log.levels.WARN)
-  elseif helpers.exists(shadafile) then
-    helpers.log('Shada file already exists at ' .. shadafile, vim.log.levels.INFO)
-  else
-    helpers.create_file(shadafile)
-  end
-end
+local M = {}
 
 ---Setup the commands for the plugin.
 ---@param opts Options The options for the plugin.
 M.setup = function(opts)
-  M.make_shada = function() make_shada(opts.shadafile) end
+  M.add_mark = decorate(func.add_mark, opts.message)
+  M.make_shada = function() func.make_shada(opts.shadafile) end
+  M.last_position = decorate(func.last_position, opts.message)
+  M.last_column_position = decorate(func.last_column_position, opts.message)
 
   vim.cmd [[command! -nargs=0 MakeShada lua require'projectmarks.commands'.make_shada(require'projectmarks'.opts.shadafile)]]
+  vim.cmd [[command! -nargs=? AddMark lua require'projectmarks.commands'.add_mark(<f-args>)]]
+  vim.cmd [[command! -nargs=0 LastPosition lua require'projectmarks.commands'.last_position()]]
+  vim.cmd [[command! -nargs=0 LastColumnPosition lua require'projectmarks.commands'.last_column_position()]]
 end
 
 return M

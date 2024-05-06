@@ -1,7 +1,6 @@
 local helpers = require('projectmarks.helpers')
 local commands = require('projectmarks.commands')
-
-local M = {}
+local mappings = require('projectmarks.mappings')
 
 ---@class Options The default options for the plugin.
 ---@field shadafile string If set to a string, the vim.go.shadafile is set to
@@ -18,15 +17,16 @@ local default_opts = {
   message = 'Waiting for mark...'
 }
 
+---@class UserOptions : Options The options provided by the user.
+local M = {}
+
 --- Setup the configuration for the plugin.
----@param user_opts Options The options provided by the user.
+---@param user_opts UserOptions The options provided by the user.
 M.setup = function(user_opts)
   M.opts = vim.tbl_deep_extend('force', default_opts, user_opts or {})
   helpers.set_shadafile(M.opts.shadafile)
-  if M.opts.mappings then
-    helpers.set_mappings(M.opts.message)
-  end
   commands.setup(M.opts)
+  mappings.setup(M.opts)
 end
 
 return M
