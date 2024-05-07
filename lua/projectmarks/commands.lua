@@ -22,7 +22,7 @@ M.setup = function(opts)
   M.last_column_position = decorate(marks.last_column_position, opts.message)
 
   vim.cmd [[command! -nargs=0 MakeShada lua require'projectmarks.commands'.make_shada(require'projectmarks'.opts.shadafile)]]
-  vim.cmd [[command! -nargs=? AddMark lua require'projectmarks.commands'.add_mark(<f-args>)]]
+  vim.cmd [[command! -nargs=? Mark lua require'projectmarks.commands'.add_mark(<f-args>)]]
   vim.cmd [[command! -nargs=1 DelMarks lua require'projectmarks.commands'.delete_mark(<f-args>)]]
   vim.cmd [[command! -nargs=0 LastPosition lua require'projectmarks.commands'.last_position()]]
   vim.cmd [[command! -nargs=0 LastColumnPosition lua require'projectmarks.commands'.last_column_position()]]

@@ -12,25 +12,17 @@ local M = {}
 --- - m -> the mark_optimized_refresh function is called once the mark is set.
 ---
 --- Furthermore, the following command line abbreviations are set:
---- - mark -> AddMark
+--- - mark -> Mark
 --- - delmarks -> DelMarks
 --- Both abbreviations ensure that the mark_optimized_refresh function is called
 --- once the mark is set or deleted.
 ---@param opts Options
 M.setup = function(opts)
-  if opts.mappings == false then
-    return
+  if opts.mappings then
+    helpers.nnoremap("'", ":LastPosition<CR>")
+    helpers.nnoremap("`", ":LastColumnPosition<CR>")
+    helpers.nnoremap("m", ":Mark<CR>")
   end
-
-  --TODO: when aborting the jump commands belwo, and error is thrown. This is
-  --not nice.
-  helpers.nnoremap("'", ":LastPosition<CR>")
-  helpers.nnoremap("`", ":LastColumnPosition<CR>")
-  helpers.nnoremap("m", ":AddMark<CR>")
-
-  --TODO: these abbreviations are not yet working...
-  vim.cmd [[ cnoreabbrev mark AddMark ]]
-  vim.cmd [[ cnoreabbrev delmarks DelMarks ]]
 end
 
 return M

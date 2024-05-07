@@ -72,6 +72,12 @@ require('projectmarks').setup({
   --   this feature, nothing will happen.
   mappings = true,
 
+  -- If set to true, the "mark" and "delmarks" command are replaced by the 
+  -- "Mark" and "DelMarks" using `cnoreabbrev`. This is useful when you rely on 
+  -- `lualine.marks_optimized` function, as the "Mark" and "DelMarks" commands 
+  -- will refresh lualine.
+  abbreviations = false,
+
   -- Message to be displayed when jumping to a mark.
   message = 'Waiting for mark...'
 })
@@ -146,13 +152,16 @@ The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
   option.
-- `AddMark`: The same as the `m` key and the `:mark` command, but also refreshes
+- `Mark`: The same as the `m` key and the `:mark` command, but also refreshes
   the lualine statusline.
 - `DeleteMark`: The same as the `:delmark` command, but also refreshes the
   lualine statusline.
 - `LastPosition`: Jump to the last position in the file of the given mark.
 - `LastColumnPosition`: Jump to the last column position in the file of the
   given mark.
+
+For convenience, you can set the `abbreviations` option to `true` such that the
+`:mark` and `:delmark` commands will be changed to `:Mark` and `:DeleteMark`.
 
 # Functions
 
