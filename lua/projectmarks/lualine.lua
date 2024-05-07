@@ -13,7 +13,7 @@ local marks = require "projectmarks.marks"
 local M = {}
 
 M.shada = {
-  shada.file,
+  function() return shada.file() end,
   icon = "💾",
   cond = shada.has_file
 }
