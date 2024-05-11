@@ -10,6 +10,14 @@ user. A change is always categorized based on the following types:
 - Task: a change is made to the repository that has no effect on the source
   code.
 
+# 0.2.0
+
+- Added lualine support for shada and marks for the current file.
+- Added an optimization for lualine were the marks are only updated when they 
+  are changed by the user. As a part of this, the use must use `:Mark` instead
+  of `:mark` and `:DelMarks` instead of `:delmarks`. Doing so is facilitated by
+  providing the `abbreviations` option in the configuration.
+
 # 0.1.0
 
 - Added the MakeShada command
