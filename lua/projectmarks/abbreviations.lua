@@ -18,8 +18,10 @@ M.setup = function(opts)
   if opts.abbreviations then
     local mark = make_expr_cmd_colon_abbrev("mark", "Mark")
     local delmarks = make_expr_cmd_colon_abbrev("delmarks", "DelMarks")
-    vim.api.nvim_set_keymap("ca", "mark", mark, { expr = true })
-    vim.api.nvim_set_keymap("ca", "delmarks", delmarks, { expr = true })
+    vim.cmd [[
+      cnoreabbrev <expr> mark luaeval("require('projectmarks.abbreviations').colon_abbrev('mark', 'Mark')")
+      cnoreabbrev <expr> delmarks luaeval("require('projectmarks.abbreviations').colon_abbrev('delmarks', 'DelMarks')")
+    ]]
   end
 end
 
