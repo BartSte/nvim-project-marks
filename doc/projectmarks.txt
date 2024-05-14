@@ -1,4 +1,4 @@
-*projectmarks.txt*           For NVIM v0.8.0          Last change: 2024 May 01
+*projectmarks.txt*           For NVIM v0.8.0          Last change: 2024 May 14
 
 ==============================================================================
 Table of Contents                             *projectmarks-table-of-contents*
@@ -11,11 +11,12 @@ Table of Contents                             *projectmarks-table-of-contents*
 6. Usage                                                  |projectmarks-usage|
   - Locally                                       |projectmarks-usage-locally|
   - Grouped                                       |projectmarks-usage-grouped|
-7. Functions                                          |projectmarks-functions|
-8. Commands                                            |projectmarks-commands|
-9. Troubleshooting                              |projectmarks-troubleshooting|
-10. Contributing                                   |projectmarks-contributing|
-11. License                                             |projectmarks-license|
+7. Commands                                            |projectmarks-commands|
+8. Functions                                          |projectmarks-functions|
+9. Lualine                                              |projectmarks-lualine|
+10. Troubleshooting                             |projectmarks-troubleshooting|
+11. Contributing                                   |projectmarks-contributing|
+12. License                                             |projectmarks-license|
 
 ==============================================================================
 1. README - nvim-project-marks      *projectmarks-readme---nvim-project-marks*
@@ -26,14 +27,18 @@ Minimal Neovim plugin to set file marks for specific projects.
 ==============================================================================
 2. CONTENTS                                            *projectmarks-contents*
 
-1. |projectmarks-introduction|
-2. |projectmarks-installation|
-3. |projectmarks-configuration|
-4. |projectmarks-usage|
-5. |projectmarks-functions|
-6. |projectmarks-troubleshooting|
-7. |projectmarks-contributing|
-8. |projectmarks-license|
+- |projectmarks-introduction|
+- |projectmarks-installation|
+- |projectmarks-configuration|
+- |projectmarks-usage|
+    - |projectmarks-locally|
+    - |projectmarks-grouped|
+- |projectmarks-commands|
+- |projectmarks-functions|
+- |projectmarks-lualine|
+- |projectmarks-troubleshooting|
+- |projectmarks-contributing|
+- |projectmarks-license|
 
 
 ==============================================================================
@@ -49,6 +54,8 @@ However, I wanted a simpler plugin that does only the following things:
 - After jumping to a mark, jump to the last cursor position in that file.
 
 That’s it, nothing more.
+
+Well, some extra features are added later that are nice, but not essential.
 
 
 ==============================================================================
@@ -84,9 +91,19 @@ The following configuration are the default and can be changed through the
       -- the directory tree. If not, the global shada file is used.
       shadafile = 'nvim.shada',
     
-      -- If set to true, the "'" and "`" mappings are are appended by the
-      -- `last_position`, and `last_column_position` functions, respectively
+      -- If set to true, the following happens:
+      -- - The mapping "'" is appended by the `LastPosition` command.
+      -- - The mapping "`" is appended by the `LastColumnPosition` command.
+      -- - The `m` key, the `:mark` command, and the `:delmark` command are appended
+      --   by a function that refreshes the lualine statusline. If you do not use
+      --   this feature, nothing will happen.
       mappings = true,
+    
+      -- If set to true, the "mark" and "delmarks" command are replaced by the 
+      -- "Mark" and "DelMarks" using `cnoreabbrev`. This is useful when you rely on 
+      -- `lualine.marks_optimized` function, as the "Mark" and "DelMarks" commands 
+      -- will refresh lualine.
+      abbreviations = false,
     
       -- Message to be displayed when jumping to a mark.
       message = 'Waiting for mark...'
@@ -162,31 +179,62 @@ will use the global shada file of Neovim.
 
 
 ==============================================================================
-7. Functions                                          *projectmarks-functions*
-
-The following functions are exposed:
-
-- `last_position`: Jump to the last position in the file of the given mark.
-- `last_column_position`: Jump to the last column position in the file of the
-    given mark.
-- `jump_with`: When using a global mark, the following will be appended to the
-    command: {symbol}". For example, if we set symbol to `symbol='`, after calling
-    a global mark `A`, the following command is triggered: `'A'"` As, a result the
-    cursor is returned to the last position (’") instead of the mark. As a result,
-    you will jump to the last position in the file of the given mark.
-
-
-==============================================================================
-8. Commands                                            *projectmarks-commands*
+7. Commands                                            *projectmarks-commands*
 
 The following commands are exposed:
 
 - `MakeShada`: Create a new shada file at the path that is set in the `shadafile`
     option.
+- `Mark`: The same as the `m` key and the `:mark` command, but also refreshes
+    the lualine statusline.
+- `DeleteMark`: The same as the `:delmark` command, but also refreshes the
+    lualine statusline.
+- `LastPosition`: Jump to the last position in the file of the given mark.
+- `LastColumnPosition`: Jump to the last column position in the file of the
+    given mark.
+
+For convenience, you can set the `abbreviations` option to `true` such that the
+`:mark` and `:delmark` commands will be changed to `:Mark` and `:DeleteMark`.
 
 
 ==============================================================================
-9. Troubleshooting                              *projectmarks-troubleshooting*
+8. Functions                                          *projectmarks-functions*
+
+The following functions are exposed through the `require("projectmarks")`
+module.
+
+- `jump_with`: When using a global mark, the following will be appended to the
+    command: {symbol}". For example, if we set symbol to `symbol='`, after calling
+    a global mark `A`, the following command is triggered: `'A'"` As, a result the
+    cursor is returned to the last position (’") instead of the mark. As a result,
+    you will jump to the last position in the file of the given mark.
+- The functions: `make_shada`, `add_mark`, `delete_mark`, `last_position`, and
+    `last_column_position` are also exposed. They are equivalent to the commands,
+    only now no notifications are displayed.
+
+It is not recommended to use functions from other modules, as they are may be
+subject to change, with the exception of the `require("projectmarks").lualine`
+module, as is explained in the next section.
+
+
+==============================================================================
+9. Lualine                                              *projectmarks-lualine*
+
+For those using lualine, the following tables can be used for lualine:
+
+- `require('projectmarks').lualine.shada`: Displays an icon with the name of the
+    shada file that is being used. If the global shada file is used, nothing is
+    displayed.
+- `require('projectmarks').lualine.marks`: Displays the marks that are set in
+    the current buffer. If no marks are set, nothing is displayed.
+- `require('projectmarks').lualine.marks_optimized`: Has the same functionality
+    as `marks`, but it only refreshes its content when the active buffer changes,
+    or the marks are changed. The `opts.mapping` option must be set to `true` for
+    this to work.
+
+
+==============================================================================
+10. Troubleshooting                             *projectmarks-troubleshooting*
 
 If you encounter any issues, please report them on the issue tracker at:
 nvim-project-marks issues
@@ -194,14 +242,14 @@ nvim-project-marks issues
 
 
 ==============================================================================
-10. Contributing                                   *projectmarks-contributing*
+11. Contributing                                   *projectmarks-contributing*
 
 Contributions are welcome! Please see CONTRIBUTING <./CONTRIBUTING.md> for more
 information.
 
 
 ==============================================================================
-11. License                                             *projectmarks-license*
+12. License                                             *projectmarks-license*
 
 Distributed under the MIT License.
 
