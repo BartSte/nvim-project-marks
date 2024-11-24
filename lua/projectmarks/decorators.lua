@@ -24,7 +24,6 @@ M.message = function(callback, message)
   return function(...)
     helpers.notify(message, vim.log.levels.INFO)
     local result = callback(...)
-    helpers.notify('', vim.log.levels.INFO)
     vim.api.nvim_command('redraw')
     return result
   end

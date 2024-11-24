@@ -1,8 +1,8 @@
-local shada = require "projectmarks.shada"
+local abbreviations = require "projectmarks.abbreviations"
 local commands = require "projectmarks.commands"
 local mappings = require "projectmarks.mappings"
 local marks = require "projectmarks.marks"
-local abbreviations = require "projectmarks.abbreviations"
+local shada = require "projectmarks.shada"
 
 ---@class Options The default options for the plugin.
 ---@field shadafile string If set to a string, the vim.go.shadafile is set to
@@ -17,11 +17,13 @@ local abbreviations = require "projectmarks.abbreviations"
 ---"DelMarks" commands will refresh lualine.
 ---@field message string Message to be displayed when jumping to a mark. Is only
 ---displayed if mappings are enabled.
+---@field message_opts table The opts that are passed to `vim.api.nvim_notify`.
 local default_opts = {
   shadafile = 'nvim.shada',
   mappings = true,
   abbreviations = false,
-  message = 'Waiting for mark...'
+  message = 'Waiting for mark...',
+  message_opts = { timeout = 2000 }
 }
 
 ---@class UserOptions : Options The options provided by the user.

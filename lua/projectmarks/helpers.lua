@@ -2,10 +2,17 @@
 local M = {}
 
 --- Logs a message to the user.
----@param msg string The message to be displayed.
+---@param msg string The message to be displayed. If the message is empty, no
+---notification is displayed.
 ---@param level number The level of the message.
-M.notify = function(msg, level)
-  vim.api.nvim_notify(msg, level, {})
+---@param opts table|nil The opts that are passed to `vim.api.nvim_notify`. If
+---not provided, the global options are used.
+M.notify = function(msg, level, opts)
+  if msg == '' then
+    return
+  end
+  opts = opts or require('projectmarks').opts.message_opts
+  vim.api.nvim_notify(msg, level, opts)
 end
 
 --- Helper function to map keys in normal mode.

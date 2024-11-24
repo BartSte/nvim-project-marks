@@ -78,8 +78,12 @@ require('projectmarks').setup({
   -- will refresh lualine.
   abbreviations = false,
 
-  -- Message to be displayed when jumping to a mark.
+  -- Message to be displayed when jumping to a mark. No message is displayed if
+  -- set to an empty string.
   message = 'Waiting for mark...'
+
+  -- Message opts, table passed to nvim_notify.
+  message_opts = { timeout = 2000 }
 })
 ```
 
