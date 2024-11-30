@@ -1,4 +1,4 @@
-*projectmarks.txt*           For NVIM v0.8.0          Last change: 2024 May 14
+*projectmarks.txt*        For NVIM v0.8.0        Last change: 2024 November 30
 
 ==============================================================================
 Table of Contents                             *projectmarks-table-of-contents*
@@ -105,8 +105,12 @@ The following configuration are the default and can be changed through the
       -- will refresh lualine.
       abbreviations = false,
     
-      -- Message to be displayed when jumping to a mark.
+      -- Message to be displayed when jumping to a mark. No message is displayed if
+      -- set to an empty string.
       message = 'Waiting for mark...'
+    
+      -- Message opts, table passed to nvim_notify.
+      message_opts = { timeout = 2000 }
     })
 <
 
