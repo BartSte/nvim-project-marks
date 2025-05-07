@@ -5,6 +5,7 @@ Minimal Neovim plugin to set file marks for specific projects.
 # CONTENTS
 
 <!--toc:start-->
+
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Configuration](#configuration)
@@ -48,10 +49,7 @@ return {
 }
 ```
 
-Lazy loading is not recommended, as the plugin may need to load another shada
-file than the global one. By lazy loading the plugin, this will go wrong. Note
-that the plugin is very small, so it will not slow down your startup time
-noticeably.
+The setup command can be called any time.
 
 # Configuration
 
@@ -60,8 +58,9 @@ The following configuration are the default and can be changed through the
 
 ```lua
 require('projectmarks').setup({
-  -- Set Neovim's shadafile to the given value, if it can be found by moving up
-  -- the directory tree. If not, the global shada file is used.
+  -- Set Neovim's shadafile to the given value and call `rshada!` on that value,
+  -- if it can be found by moving up the directory tree. If not, the global
+  -- shada file is used.
   shadafile = 'nvim.shada',
 
   -- If set to true, the following happens:
@@ -72,9 +71,9 @@ require('projectmarks').setup({
   --   this feature, nothing will happen.
   mappings = true,
 
-  -- If set to true, the "mark" and "delmarks" command are replaced by the 
-  -- "Mark" and "DelMarks" using `cnoreabbrev`. This is useful when you rely on 
-  -- `lualine.marks_optimized` function, as the "Mark" and "DelMarks" commands 
+  -- If set to true, the "mark" and "delmarks" command are replaced by the
+  -- "Mark" and "DelMarks" using `cnoreabbrev`. This is useful when you rely on
+  -- `lualine.marks_optimized` function, as the "Mark" and "DelMarks" commands
   -- will refresh lualine.
   abbreviations = false,
 
