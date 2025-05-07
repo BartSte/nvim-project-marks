@@ -28,6 +28,7 @@ M.set_file = function(path)
     path = ''
   end
   vim.go.shadafile = vim.fn.findfile(path, '.;')
+  vim.cmd("rshada!")
 end
 
 --- Return the name of the shada file.
