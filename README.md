@@ -12,6 +12,7 @@ Minimal Neovim plugin to set file marks for specific projects.
 - [Usage](#usage)
   - [Locally](#locally)
   - [Grouped](#grouped)
+  - [Linked Git worktrees](#linked-git-worktrees)
 - [Commands](#commands)
 - [Functions](#functions)
 - [Lualine](#lualine)
@@ -71,6 +72,9 @@ require('projectmarks').setup({
   --   this feature, nothing will happen.
   mappings = true,
 
+  -- Open the marked file in the active worktree of the same Git repository.
+  worktree_relative = false,
+
   -- If set to true, the "mark" and "delmarks" command are replaced by the
   -- "Mark" and "DelMarks" using `cnoreabbrev`. This is useful when you rely on
   -- `lualine.marks_optimized` function, as the "Mark" and "DelMarks" commands
@@ -79,7 +83,7 @@ require('projectmarks').setup({
 
   -- Message to be displayed when jumping to a mark. No message is displayed if
   -- set to an empty string.
-  message = 'Waiting for mark...'
+  message = 'Waiting for mark...',
 
   -- Message opts, table passed to nvim_notify.
   message_opts = { timeout = 2000 }
@@ -148,6 +152,19 @@ Now, each time you open Neovim from the root of a project, the plugin will look
 for a shada file in `~/shadas` with the name of the root directory of the
 project. If it finds one, it will use that file. If it does not find one, it
 will use the global shada file of Neovim.
+
+## Linked Git worktrees
+
+Set `worktree_relative = true` to use uppercase marks across linked worktrees.
+The plugin resolves the mark relative to the worktree of the current file.
+In an unnamed buffer, it uses the current working directory.
+
+For example, set `mA` on `src/client.py` in the main checkout. In a linked
+worktree, press `'A` to open that worktree's copy at its last cursor position.
+If the file is missing from the active worktree, the plugin shows a warning.
+
+For marks to persist across sessions, configure those sessions to use the same
+ShaDa file. The option requires Git 2.31 or later.
 
 # Commands
 
