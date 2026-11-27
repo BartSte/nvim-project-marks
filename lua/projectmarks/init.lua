@@ -11,6 +11,7 @@ local shada = require "projectmarks.shada"
 ---@field mappings boolean If set to true, the "'" and "`" mappings are are
 ---appended by the `last_position`, and `last_column_position` functions,
 ---respectively.
+---@field worktree_relative boolean Resolve uppercase marks in the active Git worktree.
 ---@field abbreviations boolean If set to true, the "mark" and "delmarks" command
 ---are replaced by the "Mark" and "DelMarks" using `cnoreabbrev`. This is useful
 ---when you rely on `lualine.marks_optimized` function, as the "Mark" and
@@ -21,6 +22,7 @@ local shada = require "projectmarks.shada"
 local default_opts = {
   shadafile = 'nvim.shada',
   mappings = true,
+  worktree_relative = false,
   abbreviations = false,
   message = 'Waiting for mark...',
   message_opts = { timeout = 2000 }
@@ -34,6 +36,7 @@ local M = {}
 M.setup = function(user_opts)
   M.opts = vim.tbl_deep_extend('force', default_opts, user_opts or {})
   shada.set_file(M.opts.shadafile)
+  marks.setup(M.opts)
   commands.setup(M.opts)
   mappings.setup(M.opts)
   abbreviations.setup(M.opts)

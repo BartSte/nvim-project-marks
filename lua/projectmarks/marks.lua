@@ -1,6 +1,41 @@
 ---@class Marks
 local M = {}
 
+local worktree_relative = false
+
+function M.setup(opts)
+  worktree_relative = opts.worktree_relative
+end
+
+local function jump_in_worktree(symbol, mark)
+  local position = vim.api.nvim_get_mark(mark, {})
+  local path = position[3] == 0 and position[4] or vim.api.nvim_buf_get_name(position[3])
+  if path == '' then
+    return false
+  end
+
+  local target = require('projectmarks.worktree').resolve(path)
+  if not target then
+    return false
+  end
+  if vim.fn.filereadable(target) == 0 then
+    require('projectmarks.helpers').notify(
+      'The marked file is missing from this worktree. ' .. target,
+      vim.log.levels.WARN
+    )
+    return true
+  end
+
+  -- Keep the original mark and add the current position to the jump list.
+  local buffer = vim.fn.bufadd(target)
+  vim.cmd.normal({ args = { "m'" }, bang = true })
+  if buffer ~= vim.api.nvim_get_current_buf() then
+    vim.cmd.buffer(buffer)
+  end
+  vim.cmd.normal({ args = { symbol .. '"' }, bang = true })
+  return true
+end
+
 ---When using a upper case mark, the following will be appended to the command:
 ---  {symbol}"
 ---For example, if we set symbol to `symbol='`, after calling a global mark
@@ -11,6 +46,10 @@ local M = {}
 ---@param symbol string The symbol to be used for the mark.
 M.jump_with = function(symbol)
   local mark = vim.fn.nr2char(vim.fn.getchar())
+  if worktree_relative and mark:match('^[A-Z]$') and jump_in_worktree(symbol, mark) then
+    return
+  end
+
   local command = symbol .. mark
   if mark == string.upper(mark) then
     command = command .. symbol .. '"'

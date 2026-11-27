@@ -10,6 +10,10 @@ user. A change is always categorized based on the following types:
 - Task: a change is made to the repository that has no effect on the source
   code.
 
+# 0.3.0
+
+- Feature: Add an option to open uppercase marks in the active Git worktree.
+
 # 0.2.0
 
 - Added lualine support for shada and marks for the current file.
